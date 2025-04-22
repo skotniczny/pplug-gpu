@@ -1,5 +1,5 @@
 /*============================================================================
-Copyright (c) 2018-2025 Raspberry Pi Holdings Ltd.
+Copyright (c) 2018-2025 Raspberry Pi
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -60,9 +60,11 @@ static float get_gpu_usage_new (GPUPlugin *g)
     unsigned long long timestamp, elapsed = 0, runtime;
     float max, load[5];
     int i;
+    FILE *fp;
 
     // open the stats file
-    FILE *fp = fopen ("/sys/devices/platform/axi/1002000000.v3d/gpu_stats", "rb");
+    fp = fopen ("/sys/devices/platform/axi/1002000000.v3d/gpu_stats", "rb");
+    if (fp == NULL) fp = fopen ("/sys/devices/platform/v3dbus/fec00000.v3d/gpu_stats", "rb");
     if (fp == NULL) return -1.0;
 
     // read the stats file a line at a time
