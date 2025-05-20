@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: wfplug-gpu
-Source: https://github.com/raspberrypi-ui/wfplug-connect.git
+Upstream-Name: pplug-gpu
+Source: https://github.com/raspberrypi-ui/pplug-connect.git
 
 Files: *
 Copyright: 2025 Raspberry Pi Holdings Ltd.

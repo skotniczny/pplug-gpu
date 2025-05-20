@@ -25,9 +25,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ============================================================================*/
 
+#include <locale.h>
 #include <glib/gi18n.h>
 
+#ifdef LXPLUG
+#include "plugin.h"
+#else
 #include "lxutils.h"
+#endif
 
 #include "gpu.h"
 
@@ -38,6 +43,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*----------------------------------------------------------------------------*/
 /* Global data                                                                */
 /*----------------------------------------------------------------------------*/
+
+conf_table_t conf_table[4] = {
+    {CONF_TYPE_BOOL,     "show_percentage",  N_("Show usage as percentage"),    NULL},
+    {CONF_TYPE_COLOUR,   "foreground",       N_("Foreground colour"),           NULL},
+    {CONF_TYPE_COLOUR,   "background",       N_("Background colour"),           NULL},
+    {CONF_TYPE_NONE,     NULL,               NULL,                              NULL}
+};
 
 /*----------------------------------------------------------------------------*/
 /* Prototypes                                                                 */
@@ -207,11 +219,15 @@ static gboolean gpu_update (GPUPlugin *g)
 void gpu_update_display (GPUPlugin *g)
 {
     GdkRGBA none = {0, 0, 0, 0};
-    graph_reload (&(g->graph), g->icon_size, g->background_colour, g->foreground_colour, none, none);
+    graph_reload (&(g->graph), wrap_icon_size (g), g->background_colour, g->foreground_colour, none, none);
 }
 
 void gpu_init (GPUPlugin *g)
 {
+    setlocale (LC_ALL, "");
+    bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+
     /* Allocate icon as a child of top level */
     graph_init (&(g->graph));
     gtk_container_add (GTK_CONTAINER (g->plugin), g->graph.da);
@@ -232,6 +248,78 @@ void gpu_destructor (gpointer user_data)
     if (g->timer) g_source_remove (g->timer);
     g_free (g);
 }
+
+/*----------------------------------------------------------------------------*/
+/* LXPanel plugin functions                                                   */
+/*----------------------------------------------------------------------------*/
+#ifdef LXPLUG
+
+/* Constructor */
+static GtkWidget *gpu_constructor (LXPanel *panel, config_setting_t *settings)
+{
+    /* Allocate and initialize plugin context */
+    GPUPlugin *g = g_new0 (GPUPlugin, 1);
+
+    /* Allocate top level widget and set into plugin widget pointer. */
+    g->panel = panel;
+    g->settings = settings;
+    g->plugin = gtk_event_box_new ();
+    lxpanel_plugin_set_data (g->plugin, g, gpu_destructor);
+
+    /* Set config defaults */
+    gdk_rgba_parse (&g->foreground_colour, "dark gray");
+    gdk_rgba_parse (&g->background_colour, "light gray");
+    g->show_percentage = TRUE;
+
+    /* Read config */
+    conf_table[0].value = (void *) &g->show_percentage;
+    conf_table[1].value = (void *) &g->foreground_colour;
+    conf_table[2].value = (void *) &g->background_colour;
+    lxplug_read_settings (g->settings, conf_table);
+
+    gpu_init (g);
+
+    return g->plugin;
+}
+
+/* Handler for system config changed message from panel */
+static void gpu_configuration_changed (LXPanel *, GtkWidget *plugin)
+{
+    GPUPlugin *g = lxpanel_plugin_get_data (plugin);
+    gpu_update_display (g);
+}
+
+/* Apply changes from config dialog */
+static gboolean gpu_apply_configuration (gpointer user_data)
+{
+    GPUPlugin *g = lxpanel_plugin_get_data (GTK_WIDGET (user_data));
+
+    lxplug_write_settings (g->settings, conf_table);
+
+    gpu_update_display (g);
+    return FALSE;
+}
+
+/* Display configuration dialog */
+static GtkWidget *gpu_configure (LXPanel *panel, GtkWidget *plugin)
+{
+    return lxpanel_generic_config_dlg_new(_("GPU Usage"), panel,
+        gpu_apply_configuration, plugin,
+        conf_table);
+}
+
+FM_DEFINE_MODULE (lxpanel_gtk, gpu)
+
+/* Plugin descriptor */
+LXPanelPluginInit fm_module_init_lxpanel_gtk = {
+    .name = N_("GPU Usage Monitor"),
+    .config = gpu_configure,
+    .description = N_("Display GPU usage"),
+    .new_instance = gpu_constructor,
+    .reconfigure = gpu_configuration_changed,
+    .gettext_package = GETTEXT_PACKAGE
+};
+#endif
 
 /* End of file */
 /*----------------------------------------------------------------------------*/

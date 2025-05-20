@@ -31,9 +31,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 typedef struct
 {
+    GtkWidget *plugin;
+
+#ifdef LXPLUG
+    LXPanel *panel;                         /* Back pointer to panel */
+    config_setting_t *settings;             /* Plugin settings */
+#else
     int icon_size;                          /* Variables used under wf-panel */
     gboolean bottom;
-    GtkWidget *plugin;                      /* Back pointer to the widget */
+#endif
+
     PluginGraph graph;
     GdkRGBA foreground_colour;              /* Foreground colour for drawing area */
     GdkRGBA background_colour;              /* Background colour for drawing area */
@@ -42,6 +49,8 @@ typedef struct
     unsigned long long last_val[5];
     unsigned long long last_timestamp;
 } GPUPlugin;
+
+extern conf_table_t conf_table[4];
 
 /*----------------------------------------------------------------------------*/
 /* Prototypes                                                                 */
