@@ -43,7 +43,6 @@ class WayfireGPU : public WayfireWidget
     Glib::RefPtr<Gtk::GestureLongPress> gesture;
 
     WfOption <int> icon_size {"panel/icon_size"};
-    WfOption <std::string> bar_pos {"panel/position"};
     sigc::connection icon_timer;
 
     WfOption <bool> show_percentage {"panel/gpu_show_percentage"};
@@ -58,7 +57,6 @@ class WayfireGPU : public WayfireWidget
     void init (Gtk::HBox *container) override;
     virtual ~WayfireGPU ();
     void icon_size_changed_cb (void);
-    void bar_pos_changed_cb (void);
     bool set_icon (void);
     void settings_changed_cb (void);
 };

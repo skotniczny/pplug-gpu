@@ -38,12 +38,6 @@ extern "C" {
     const char *package_name (void) { return GETTEXT_PACKAGE; };
 }
 
-void WayfireGPU::bar_pos_changed_cb (void)
-{
-    if ((std::string) bar_pos == "bottom") gpu->bottom = TRUE;
-    else gpu->bottom = FALSE;
-}
-
 void WayfireGPU::icon_size_changed_cb (void)
 {
     gpu->icon_size = icon_size;
@@ -78,7 +72,6 @@ void WayfireGPU::init (Gtk::HBox *container)
     gpu->plugin = (GtkWidget *)((*plugin).gobj());
     gpu->icon_size = icon_size;
     icon_timer = Glib::signal_idle().connect (sigc::mem_fun (*this, &WayfireGPU::set_icon));
-    bar_pos_changed_cb ();
 
     /* Add long press for right click */
     gesture = add_longpress_default (*plugin);
@@ -88,7 +81,6 @@ void WayfireGPU::init (Gtk::HBox *container)
 
     /* Setup callbacks */
     icon_size.set_callback (sigc::mem_fun (*this, &WayfireGPU::icon_size_changed_cb));
-    bar_pos.set_callback (sigc::mem_fun (*this, &WayfireGPU::bar_pos_changed_cb));
     show_percentage.set_callback (sigc::mem_fun (*this, &WayfireGPU::settings_changed_cb));
     foreground_colour.set_callback (sigc::mem_fun (*this, &WayfireGPU::settings_changed_cb));
     background_colour.set_callback (sigc::mem_fun (*this, &WayfireGPU::settings_changed_cb));

@@ -40,7 +40,6 @@ typedef struct
     config_setting_t *settings;             /* Plugin settings */
 #else
     int icon_size;                          /* Variables used under wf-panel */
-    gboolean bottom;
 #endif
 
     PluginGraph graph;
