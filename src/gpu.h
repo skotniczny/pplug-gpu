@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Typedefs and macros */
 /*----------------------------------------------------------------------------*/
 
+#define PLUGIN_TITLE "GPU"
+
 typedef struct
 {
     GtkWidget *plugin;

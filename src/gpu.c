@@ -303,7 +303,7 @@ static gboolean gpu_apply_configuration (gpointer user_data)
 /* Display configuration dialog */
 static GtkWidget *gpu_configure (LXPanel *panel, GtkWidget *plugin)
 {
-    return lxpanel_generic_config_dlg_new(_("GPU Usage"), panel,
+    return lxpanel_generic_config_dlg_new(_(PLUGIN_TITLE), panel,
         gpu_apply_configuration, plugin,
         conf_table);
 }
@@ -312,7 +312,7 @@ FM_DEFINE_MODULE (lxpanel_gtk, gpu)
 
 /* Plugin descriptor */
 LXPanelPluginInit fm_module_init_lxpanel_gtk = {
-    .name = N_("GPU Usage Monitor"),
+    .name = N_(PLUGIN_TITLE),
     .config = gpu_configure,
     .description = N_("Display GPU usage"),
     .new_instance = gpu_constructor,
