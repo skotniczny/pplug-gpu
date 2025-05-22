@@ -38,25 +38,24 @@ extern "C" {
     const char *package_name (void) { return GETTEXT_PACKAGE; };
 }
 
-void WayfireGPU::icon_size_changed_cb (void)
-{
-    gpu->icon_size = icon_size;
-    gpu_update_display (gpu);
-}
-
 bool WayfireGPU::set_icon (void)
 {
     gpu_update_display (gpu);
     return false;
 }
 
-void WayfireGPU::settings_changed_cb (void)
+void WayfireGPU::read_settings (void)
 {
     gpu->show_percentage = show_percentage;
     if (!gdk_rgba_parse (&gpu->foreground_colour, ((std::string) foreground_colour).c_str()))
         gdk_rgba_parse (&gpu->foreground_colour, "dark gray");
     if (!gdk_rgba_parse (&gpu->background_colour, ((std::string) background_colour).c_str()))
         gdk_rgba_parse (&gpu->background_colour, "light gray");
+}
+
+void WayfireGPU::settings_changed_cb (void)
+{
+    read_settings ();
     gpu_update_display (gpu);
 }
 
@@ -70,22 +69,19 @@ void WayfireGPU::init (Gtk::HBox *container)
     /* Setup structure */
     gpu = g_new0 (GPUPlugin, 1);
     gpu->plugin = (GtkWidget *)((*plugin).gobj());
-    gpu->icon_size = icon_size;
     icon_timer = Glib::signal_idle().connect (sigc::mem_fun (*this, &WayfireGPU::set_icon));
 
     /* Add long press for right click */
     gesture = add_longpress_default (*plugin);
 
     /* Initialise the plugin */
+    read_settings ();
     gpu_init (gpu);
 
     /* Setup callbacks */
-    icon_size.set_callback (sigc::mem_fun (*this, &WayfireGPU::icon_size_changed_cb));
     show_percentage.set_callback (sigc::mem_fun (*this, &WayfireGPU::settings_changed_cb));
     foreground_colour.set_callback (sigc::mem_fun (*this, &WayfireGPU::settings_changed_cb));
     background_colour.set_callback (sigc::mem_fun (*this, &WayfireGPU::settings_changed_cb));
-
-    settings_changed_cb ();
 }
 
 WayfireGPU::~WayfireGPU()
