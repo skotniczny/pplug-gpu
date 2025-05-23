@@ -308,11 +308,12 @@ static GtkWidget *gpu_configure (LXPanel *panel, GtkWidget *plugin)
         conf_table);
 }
 
-FM_DEFINE_MODULE (lxpanel_gtk, gpu)
+int module_lxpanel_gtk_version = __FM_DEFINE_VERSION__(lxpanel_gtk);
+char module_name[] = PLUGIN_NAME;
 
 /* Plugin descriptor */
 LXPanelPluginInit fm_module_init_lxpanel_gtk = {
-    .name = N_(PLUGIN_TITLE),
+    .name = PLUGIN_TITLE,
     .config = gpu_configure,
     .description = N_("Display GPU usage"),
     .new_instance = gpu_constructor,

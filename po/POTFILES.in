@@ -1,2 +1,5 @@
-src/gpu.cpp
+[encoding: UTF-8]
 src/gpu.c
+src/gpu.cpp
+src/gpu.h
+src/gpu.hpp
