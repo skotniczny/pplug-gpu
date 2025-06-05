@@ -1,0 +1,3 @@
+usr/lib/${DEB_HOST_MULTIARCH}/wf-panel-pi/libgpu.so
+usr/share/wf-panel-pi/metadata/gpu.xml
+usr/share/locale/*/LC_MESSAGES/wfplug_gpu.mo
