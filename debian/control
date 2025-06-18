@@ -10,12 +10,12 @@ Build-Depends:
 Standards-Version: 4.5.1
 Homepage: http://raspberrypi.com/
 
-Package: lxplug-gpu
+Package: lpplug-gpu
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
  lxpanel-pi
-Description: GPU plugin for lxpanel
- Plugin for lxpanel to display GPU load.
+Description: GPU plugin for lxpanel-pi
+ Plugin for lxpanel-pi to display GPU load.
 
 Package: wfplug-gpu
 Architecture: any
