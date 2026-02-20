@@ -1,3 +1,9 @@
+pplug-gpu (1.2) trixie; urgency=medium
+
+  * Rebuild against latest APIs
+
+ -- Simon Long <simon@raspberrypi.com>  Fri, 20 Feb 2026 09:58:40 +0000
+
 pplug-gpu (1.1) trixie; urgency=medium
 
   * Add Chinese translation
